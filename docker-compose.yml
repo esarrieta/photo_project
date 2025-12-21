@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: photo_db
+      MYSQL_ROOT_PASSWORD: somerootpassword
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  web:
+    build: .
+    image:  photo-app:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
