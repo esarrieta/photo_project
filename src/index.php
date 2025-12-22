@@ -1,39 +1,3 @@
-<?php
-$folderName = basename(__DIR__);
-
-$imageDir = 'images/';
-$images = [];
-
-if (is_dir($imageDir)) {
-    $files = scandir($imageDir);
-    foreach ($files as $file) {
-        if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $file)) {
-            $images[] = $imageDir . $file;
-        }
-    }
-}
-?>
-
-<?php
-$host = 'db';
-$user = 'root';
-$pass = 'somerootpassword';
-$db   = 'photo_db';
-
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT filename FROM photos";
-$result = $conn->query($sql);
-
-while($row = $result->fetch_assoc()) {
-    echo "<img src='images/" . $row['filename'] . "' width='200' /><br>";
-}
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,15 +17,27 @@ while($row = $result->fetch_assoc()) {
         </a>
     </p>
 
-    <div class="gallery">
-        <?php if (empty($images)): ?>
-            <p>No images found in the /images folder.</p>
-        <?php else: ?>
-            <?php foreach ($images as $image): ?>
-                <img src="<?php echo $image; ?>" alt="Photo">
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </div>
-
 </body>
 </html>
+
+
+<?php
+$host = 'db';
+$user = 'root';
+$pass = 'somerootpassword';
+$db   = 'photo_db';
+
+$conn = new mysqli($host, $user, $pass, $db);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "SELECT filename FROM photos";
+$result = $conn->query($sql);
+
+while($row = $result->fetch_assoc()) {
+    echo "<img src='images/" . $row['filename'] . "' width='200' />";
+}
+?>
+
