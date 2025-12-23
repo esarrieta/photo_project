@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "photo_project",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}
