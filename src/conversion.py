@@ -43,7 +43,6 @@ def run_conversion(folder_path):
             jpg_path = os.path.join(folder_path, new_filename)
 
             if os.path.exists(heic_path):
-
                 try:
                     image = Image.open(heic_path)
                     image.save(jpg_path, "JPEG", quality=90)
@@ -51,8 +50,6 @@ def run_conversion(folder_path):
                     sql = "UPDATE photos SET filename = %s WHERE id = %s"
                     cursor.execute(sql, (new_filename, photo_id))
                     conn.commit()
-
-                    os.remove(heic_path)
                 
                 except Exception as e:
                     print(f"Error converting {filename}: {e}")
