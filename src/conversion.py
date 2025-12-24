@@ -10,12 +10,12 @@ register_heif_opener()
 
 def connect_to_database():
     while True:
-        try: 
+        try:
             connection = mysql.connector.connect(
-                host='db',
-                database ='photo_db',
-                user='root',
-                password='somerootpassword'
+                host=os.getenv('DB_HOST', 'db'),
+                database=os.getenv('MYSQL_DATABASE', 'photo_db'),
+                user=os.getenv('MYSQL_USER', 'photo_app'),
+                password=os.getenv('MYSQL_PASSWORD', 'photo_app_secure_password_456')
             )
             if connection.is_connected():
                 return connection

@@ -22,22 +22,37 @@
 
 
 <?php
-$host = 'db';
-$user = 'root';
-$pass = 'somerootpassword';
-$db   = 'photo_db';
+// Get database configuration from environment variables
+$host = getenv('DB_HOST') ?: 'db';
+$user = getenv('MYSQL_USER') ?: 'photo_app';
+$pass = getenv('MYSQL_PASSWORD') ?: 'photo_app_secure_password_456';
+$db   = getenv('MYSQL_DATABASE') ?: 'photo_db';
 
 $conn = new mysqli($host, $user, $pass, $db);
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Don't expose connection details in production
+    error_log("Database connection failed: " . $conn->connect_error);
+    echo "<p style='color: red;'>Unable to connect to database. Please try again later.</p>";
+    exit;
 }
 
 $sql = "SELECT filename FROM photos";
 $result = $conn->query($sql);
 
-while($row = $result->fetch_assoc()) {
-    echo "<img src='images/" . $row['filename'] . "' width='200' />";
+if ($result) {
+    echo "<div class='gallery'>";
+    while($row = $result->fetch_assoc()) {
+        // Escape output to prevent XSS
+        $filename = htmlspecialchars($row['filename'], ENT_QUOTES, 'UTF-8');
+        echo "<img src='images/" . $filename . "' alt='Photo' />";
+    }
+    echo "</div>";
+} else {
+    error_log("Query failed: " . $conn->error);
+    echo "<p>Unable to load photos.</p>";
 }
+
+$conn->close();
 ?>
 
