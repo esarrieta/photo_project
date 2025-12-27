@@ -24,7 +24,7 @@ public class Photo {
     }
 
     public Photo(String filename) {
-    this.filename = filename;
+        this.filename = filename;
     }
 
     // Constructor

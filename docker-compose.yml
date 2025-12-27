@@ -48,7 +48,7 @@ services:
     ports:
       - "${API_PORT}:8080"
     volumes:
-      - ./src/images:/var/www/html/images
+      - ./src/images:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -57,6 +57,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - FILE_UPLOAD_DIR=/app/uploads
     networks:
       - app-network
   converter:
