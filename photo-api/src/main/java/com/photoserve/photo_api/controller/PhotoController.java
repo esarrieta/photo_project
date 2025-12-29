@@ -4,6 +4,7 @@ import com.photoserve.photo_api.model.Photo;
 import com.photoserve.photo_api.repository.PhotoRepository;
 import com.photoserve.photo_api.service.FileStorageService;
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -37,6 +38,7 @@ public class PhotoController {
         return photoRepository.findAll();
     }
 
+    @SuppressWarnings("null")
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getPhotoById(@PathVariable Long id) { 
         return photoRepository.findById(id)
@@ -49,7 +51,7 @@ public class PhotoController {
     public ResponseEntity<?> getPhotoByFilename(@PathVariable String filename) {
         return photoRepository.findByFilename(filename)
             .<ResponseEntity<?>>map(photo -> ResponseEntity.ok(photo))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND )
                 .body("Photo with filename '" + filename + "' not found in database."));
     }
 
@@ -80,6 +82,7 @@ public class PhotoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
+    @SuppressWarnings("null")
     @DeleteMapping("/id/{id}")
     public ResponseEntity<?> deletePhotoById(@PathVariable Long id) {
         return photoRepository.findById(id).map(photo -> {
@@ -88,6 +91,7 @@ public class PhotoController {
         }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body("Photo with ID " + id + " not found."));
     }
+    @SuppressWarnings("null")
     @DeleteMapping("/file/{filename}")
     public ResponseEntity<?> deletePhotoByFilename(@PathVariable String filename) {
         return photoRepository.findByFilename(filename).map(photo -> {
@@ -152,6 +156,7 @@ public class PhotoController {
         }
     }
 
+    @SuppressWarnings("null")
     @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> downloadPhoto(@PathVariable String filename) {
         try {

@@ -29,7 +29,11 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         // Normalize file name
-        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+        String rawFilename = file.getOriginalFilename();
+        if (rawFilename == null || rawFilename.isEmpty()) {
+            throw new RuntimeException("Filename cannot be null or empty");
+        }
+        String originalFilename = StringUtils.cleanPath(rawFilename);
 
         try {
             // Check if the file's name contains invalid characters
@@ -56,7 +60,11 @@ public class FileStorageService {
     }
 
     public String storeFileWithOriginalName(MultipartFile file) {
-        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+        String rawFilename = file.getOriginalFilename();
+        if (rawFilename == null || rawFilename.isEmpty()) {
+            throw new RuntimeException("Filename cannot be null or empty");
+        }
+        String originalFilename = StringUtils.cleanPath(rawFilename);
 
         try {
             if (originalFilename.contains("..")) {

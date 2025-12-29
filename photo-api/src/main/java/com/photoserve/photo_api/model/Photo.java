@@ -15,7 +15,8 @@ public class Photo {
     @Column(name = "filename", unique = true, nullable = false)
     @NotBlank(message = "Filename cannot be empty")
     @Size(min = 1, max = 255, message = "Filename must be between 1 and 255 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9_\\-\\.]+\\.(jpg|jpeg|png|gif|webp|heic|HEIC|JPG|JPEG|PNG|GIF|WEBP)$",
+    @Pattern(regexp = "^[a-zA-Z0-9_\\-\\.]+\\.(jpg|jpeg|png|gif|webp|heic)$",
+             flags = Pattern.Flag.CASE_INSENSITIVE,
              message = "Invalid filename format. Must be a valid image file")
     private String filename;
 
