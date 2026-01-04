@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
@@ -21,10 +22,12 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/photos")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.OPTIONS})
 public class PhotoController {
 
     @Autowired
@@ -157,7 +160,7 @@ public class PhotoController {
     }
 
     @SuppressWarnings("null")
-    @GetMapping("/download/{filename}")
+    @GetMapping("/download/file/{filename}")
     public ResponseEntity<Resource> downloadPhoto(@PathVariable String filename) {
         try {
             // Load file from storage
@@ -187,6 +190,53 @@ public class PhotoController {
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    @SuppressWarnings("null")
+    @GetMapping("/download/id/{id}")
+    public ResponseEntity<Resource> downloadPhotoById(@PathVariable Long id) {
+        try {
+            // Load photo from database
+            Optional<Photo> photoOptional = photoRepository.findById(id);
+            if (!photoOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            Photo photo = photoOptional.get();
+
+            // Load file from storage
+            Path filePath = fileStorageService.loadFile(photo.getFilename());
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            // Determine content type based on file extension
+            String contentType = "application/octet-stream";
+            String lowerFilename = photo.getFilename().toLowerCase();
+            if (lowerFilename.endsWith(".jpg") || lowerFilename.endsWith(".jpeg")) {
+                contentType = "image/jpeg";
+            } else if (lowerFilename.endsWith(".png")) {
+                contentType = "image/png";
+            } else if (lowerFilename.endsWith(".gif")) {
+                contentType = "image/gif";
+            } else if (lowerFilename.endsWith(".webp")) {
+                contentType = "image/webp";
+            } else if (lowerFilename.endsWith(".heic")) {
+                contentType = "image/heic";
+            }
+
+            // Return file with appropriate headers
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + photo.getFilename() + "\"")
                     .body(resource);
 
         } catch (MalformedURLException e) {
