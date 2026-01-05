@@ -1,0 +1,19 @@
+# Project Synposis
+
+This project was created and is being worked on to address the issue of running out of cloud storage for my personal photos
+
+# Design
+
+Create docker containers of a photo server with API calls to provide a web service
+
+Images need to be previewed, downloaded, uploaded, and deleted
+
+Database to store METADATA
+
+API for POST, GET, DELETE Mappings
+
+# Languages
+
+Javascript, PHP, Bash, Java, Python
+
+**View gitissues for TODOs**
