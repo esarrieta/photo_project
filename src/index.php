@@ -122,7 +122,6 @@
 </body>
 
 <body>
-    <h2>Upload Photo</h2>
     <input type="file" id="photoUpload" accept="image/*" onchange="previewPhotoAndUpload()">
     <div id="preview" style="margin: 15px 0;"></div>
     <button id="uploadButton" onclick="uploadPhoto()">Upload Photo</button>
